@@ -1,12 +1,12 @@
 /* eslint-disable react/prop-types */
-import { Avatar } from "@mui/material";
-import "./headerAdmin.scss";
-import { useState } from "react";
+import { Avatar, IconButton, Menu, MenuItem } from "@mui/material";
 import LogoutIcon from "@mui/icons-material/Logout";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import PersonIcon from "@mui/icons-material/Person";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
-import CloseIcon from '@mui/icons-material/Close';
+import CloseIcon from "@mui/icons-material/Close";
+import { useState } from "react";
+import "./headerAdmin.scss";
 
 const HeaderAdmin = ({
   user,
@@ -16,7 +16,17 @@ const HeaderAdmin = ({
   onClickUpdateInfo,
   onClickAddUser,
 }) => {
-  const [openMenu, setOpenMenu] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const openMenu = Boolean(anchorEl);
+
+  const handleClickMenu = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleCloseMenu = () => {
+    setAnchorEl(null);
+  };
+
   return (
     <header>
       {!user.company_id && <h2>Let&apos;s send</h2>}
@@ -24,12 +34,9 @@ const HeaderAdmin = ({
       {user.company_id && (
         <div className="header_connected">
           <div className="avatar">
-            <Avatar
-              onClick={() => {
-                setOpenMenu(!openMenu);
-              }}
-              src="/broken-image.jpg"
-            />
+            <IconButton onClick={handleClickMenu}>
+              <Avatar src="/broken-image.jpg" />
+            </IconButton>
             <p>{user.username}</p>
           </div>
           {openForm.initMenu !== true && (
@@ -38,44 +45,49 @@ const HeaderAdmin = ({
         </div>
       )}
 
-      {openMenu && (
-        <div className="menu">
-          <div>
-            <LogoutIcon />
-            <button
-              onClick={() => {
-                OnClickDeconnection();
-                setOpenMenu(false);
-              }}
-            >
-              Se déconnecter
-            </button>
-          </div>
-          <div>
-            <PersonIcon />
-            <button
-              onClick={() => {
-                onClickUpdateInfo();
-                setOpenMenu(false);
-              }}
-            >
-              Modifier information profil
-            </button>
-          </div>
-          {user.right === "admin" && <div>
-            <PersonAddIcon />
-            <button
-              onClick={() => {
-                onClickAddUser();
-                setOpenMenu(false);
-              }}
-            >
-              Créer un nouveau profil
-            </button>
-          </div>}
-              <CloseIcon onClick={() => setOpenMenu(false)} className="close"/>
-        </div>
-      )}
+      <Menu
+        anchorEl={anchorEl}
+        open={openMenu}
+        onClose={handleCloseMenu}
+        
+      >
+        <MenuItem
+          onClick={() => {
+            OnClickDeconnection();
+            handleCloseMenu();
+          }}
+        >
+          <LogoutIcon fontSize="small" />
+          &nbsp; Se déconnecter
+        </MenuItem>
+
+        <MenuItem
+          onClick={() => {
+            onClickUpdateInfo();
+            handleCloseMenu();
+          }}
+        >
+          <PersonIcon fontSize="small" />
+          &nbsp; Modifier profil
+        </MenuItem>
+
+        {user.right === "admin" && (
+          <MenuItem
+            onClick={() => {
+              onClickAddUser();
+              handleCloseMenu();
+            }}
+          >
+            <PersonAddIcon fontSize="small" />
+            &nbsp; Créer un nouveau profil
+          </MenuItem>
+        )}
+
+        <MenuItem onClick={handleCloseMenu}>
+          <CloseIcon fontSize="small" />
+          &nbsp; Fermer
+        </MenuItem>
+      </Menu>
     </header>
   );
 };
