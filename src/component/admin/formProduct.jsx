@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import axios from 'axios';
 import './formProduct.scss'
+import { toast } from 'react-toastify';
 
 const FormProduct = ({company_id}) => {
   // Définir l'état pour chaque champ du formulaire
@@ -28,7 +29,9 @@ const FormProduct = ({company_id}) => {
 
     try {
       const response = await axios.post('http://localhost:4000/api/menu', productData);
-      console.log('Produit créé:', response.data);
+      if(response.data) {
+        toast.success("Le produit a été créé avec succès")
+      } 
       setSuccess(true);
       // Réinitialisez le formulaire après le succès
       setNomPlat('');
@@ -37,7 +40,7 @@ const FormProduct = ({company_id}) => {
       setSousCategorie('');
       setPrice('');
     } catch (err) {
-      console.error('Erreur lors de la création du produit:', err);
+      toast.error(err.response.data.message)
       setError('Erreur lors de la création du produit');
     }
   };
