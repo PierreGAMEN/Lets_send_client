@@ -1,6 +1,9 @@
 /* eslint-disable react/prop-types */
+import { FormControl, InputLabel, MenuItem, Select, TextField } from "@mui/material";
 import axios from "axios";
 import { useState } from "react";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const CreateUser = ({ company_id }) => {
   // État pour gérer les entrées du formulaire
@@ -23,13 +26,14 @@ const CreateUser = ({ company_id }) => {
   // Fonction pour gérer la soumission du formulaire
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(formData);
     try {
       const response = await axios.post(
         "http://localhost:4000/api/auth/create",
         formData
       );
-      console.log("Produit créé:", response.data);
+      if (response.data) {
+        toast.success("L'utilisateur a été créé avec succès");
+      }
       // Réinitialisez le formulaire après le succès
       setFormData({
         username: "",
@@ -38,48 +42,56 @@ const CreateUser = ({ company_id }) => {
         company_id: company_id,
       });
     } catch (err) {
-      console.error("Erreur lors de la création de l'utilisateur", err);
+      toast.error(err.response.data.message);
     }
   };
 
   return (
     <form onSubmit={handleSubmit}>
       {/* Champ pour entrer le nom d'utilisateur */}
-      <div>
-        <label htmlFor="username">Nom d&apos;utilisateur</label>
-        <input
-          type="text"
-          id="username"
-          name="username"
-          value={formData.username}
-          onChange={handleChange}
-        />
-      </div>
-      {/* Champ pour entrer le mot de passe */}
-      <div>
-        <label htmlFor="username">Mot de passe</label>
-        <input
-          type="password"
-          id="password"
-          name="password"
-          value={formData.password}
-          onChange={handleChange}
-        />
-      </div>
 
-      {/* Sélecteur pour choisir le rôle de l'utilisateur */}
-      <div>
-        <label htmlFor="role">Rôle</label>
-        <select
-          id="role"
+      <h2>Création de profil</h2>
+      <TextField
+        autoFocus
+        margin="dense"
+        id="username"
+        name="username"
+        label="Nom d'utilisateur"
+        type="text"
+        fullWidth
+        required
+        onChange={handleChange}
+        value={formData.username}
+      />
+
+      <TextField
+        autoFocus
+        margin="dense"
+        id="password"
+        name="password"
+        label="Mot de passe"
+        type="password"
+        fullWidth
+        required
+        value={formData.password}
+        onChange={handleChange}
+      />
+
+      <FormControl margin="dense" fullWidth>
+        <InputLabel id="role">Rôle</InputLabel>
+        <Select
+          labelId="role"
           name="role"
+          id="role"
           value={formData.role}
+          label="role"
           onChange={handleChange}
         >
-          <option value="personal">Personnel</option>
-          <option value="admin">Administrateur</option>
-        </select>
-      </div>
+          <MenuItem value="personal">Personnel</MenuItem>
+          <MenuItem value="admin">Administrateur</MenuItem>
+        </Select>
+      </FormControl>
+
 
       {/* Bouton pour soumettre le formulaire */}
       <button type="submit">Créer l&apos;utilisateur</button>
