@@ -21,6 +21,7 @@ const OrderDisplay = ({ company_id }) => {
         params: { company_id },
       });
       setOrders(response.data);
+      console.log(response)
 
       // Récupérer la liste unique des tables à partir des commandes
       const tables = Array.from(
@@ -209,7 +210,7 @@ const OrderDisplay = ({ company_id }) => {
               {filteredOrders.map((order) => (
                 <li key={order.id}>
                   <p className="product">
-                    Table {order.table_id} - {order.product.name}
+                    Table {order.table_number} - {order.product.name}
                   </p>
                   <div className="status">
                     <p>Statut:</p>
