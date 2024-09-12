@@ -56,6 +56,7 @@ const TablesWithProducts = ({ company_id }) => {
       <Client
         tableNumber={selectedTable.table_number}
         companyId={company_id}
+        table_id = {selectedTable.id}
       />
     );
   }

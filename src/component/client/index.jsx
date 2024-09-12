@@ -9,20 +9,23 @@ import {
   disconnect,
 } from "../../services/websocketService";
 import './client.scss'
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import DeleteIcon from '@mui/icons-material/Delete';
 
-const Client = ({tableNumber, companyId}) => {
+const Client = ({tableNumber, companyId, table_id}) => {
   // Récupération des paramètres depuis l'URL s'ils existent
   const { id_company: id_companyParams, id_table: id_tableParams } = useParams();
 
   // Utilisation des paramètres d'URL ou des props
   const id_company = id_companyParams || companyId;
-  const id_table = id_tableParams || tableNumber;
+  const id_table = id_tableParams || table_id;
 
   const [menu, setMenu] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [cart, setCart] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
+  const [openCart, setOpenCart] = useState(false)
 
   useEffect(() => {
     async function loadMenu() {
@@ -73,7 +76,7 @@ const Client = ({tableNumber, companyId}) => {
   // Fonction pour ajouter un produit au panier
   const addToCart = (product) => {
     setCart((prevCart) => [...prevCart, product]);
-    toast.success(`${product.name} a été ajouté au panier!`);
+ 
   };
 
   const removeFromCart = (index) => {
@@ -106,6 +109,7 @@ const Client = ({tableNumber, companyId}) => {
         items,
         id_table,
         company_id: companyId,
+        table_number: tableNumber,
       },
     });
 
@@ -140,9 +144,9 @@ const Client = ({tableNumber, companyId}) => {
               <ul>
                 {menu[category][subCategory].map((item) => (
                   <li key={item.id}>
-                    {item.name} - {item.price}€<p>{item.description}</p>
+                    <div>{item.name} - {item.price}€<p>{item.description}</p></div>
                     <button className="button_Add_cart" onClick={() => addToCart(item)}>
-                      Ajouter à la commande
+                      Ajouter
                     </button>
                   </li>
                 ))}
@@ -153,26 +157,29 @@ const Client = ({tableNumber, companyId}) => {
       ))}
 
       {/* Affichage du panier */}
-      <section>
-        <h2>Panier</h2>
-        {cart.length === 0 ? (
-          <p>Votre panier est vide</p>
-        ) : (
-          <ul>
+      <section className={`panier ${!companyId ? 'panier_client' : ''}`}>
+      {tableNumber ? <h2>TABLE N°{tableNumber}</h2> : <h2>TABLE N°{id_table}</h2>}
+        <div>
+        <ShoppingCartIcon onClick={() => {setOpenCart(!openCart)}}/>
+          {cart.length > 0 && <span className="badge-info">{cart.length}</span>}
+          </div>
+          {openCart && <div className={` ${!companyId ? 'panier_content_client' : 'panier_content'}`}>
+            {cart.length > 0 ? <button onClick={placeOrder}>Lancer la commande</button> : <div>Votre panier est vide</div>}
             {cart.map((item, index) => (
               <li key={index}>
-                {item.name} - {item.price}€
-                <button onClick={() => removeFromCart(index)}>x</button>
+                <p>{item.name} - {item.price}€</p>
+                <span><DeleteIcon onClick={() => removeFromCart(index)}/></span>
               </li>
             ))}
-          </ul>
-        )}
-        {cart.length > 0 && (
+            {cart.length > 0 && (
           <>
             <p>Total: {totalPrice}€</p>
-            <button onClick={placeOrder}>Lancer la commande</button>
+            
           </>
         )}
+          </div>}
+
+        
       </section>
     </main>
   );
