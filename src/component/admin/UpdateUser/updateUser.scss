@@ -1,0 +1,62 @@
+.container_updateUser {
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+
+  h2 {
+    text-transform: uppercase;
+  }
+
+  .container_personal_info {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .container_button {
+    display: flex;
+    gap: 1rem;
+  }
+
+  .container_info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+
+    span {
+      font-weight: bold;
+      color: rgb(0, 128, 100);
+    }
+  }
+}
+
+.container_other_info {
+  h2 {
+    margin-bottom: 2rem;
+  }
+
+  .container_one_profil {
+    display: flex;
+    width: 90%;
+    padding: 5%;
+    align-items: center;
+    border: 1px solid;
+    gap: 1rem;
+
+    span {
+      width: 100%;
+    }
+
+    button {
+      border: none;
+      background-color: rgb(0, 124, 120);
+      color: white;
+      border-radius: 0px;
+    }
+
+    &:nth-child(2n) {
+      background-color: #e1e1e1; /* Couleur grise */
+    }
+  }
+}

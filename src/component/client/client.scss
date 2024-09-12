@@ -1,9 +1,157 @@
 .container_client {
 
-    padding: 2rem;
+  padding: 1rem;
+  margin-top: 15vh;
 
-    .button_Add_cart {
-        width: 50vw;
-        height: 30vh;
+  h2 {
+    color: rgb(0, 128, 107);
+    margin-top: 1rem;
+  }
+
+  button {
+    width: 100%;
+    padding: 0.5rem;
+    border-radius: 10px;
+    border:none;
+  }
+
+ 
+  h3 {
+    margin-top: 1rem;
+  }
+
+  .button_Add_cart {
+    margin-top: 0;
+  }
+
+  ul {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  li {
+    list-style-type: none;
+    display: flex;
+    align-items: center;
+
+    div {
+      flex-grow: 1;
+      min-width: 50vw;
     }
+
+    p {
+      font-style: italic;
+      font-size: 0.8rem;
+    }
+  }
+
+  .panier {
+    background-color: rgb(61, 61, 61);
+    position: fixed;
+    top: 10vh;
+    left: 0;
+    color: white;
+    display: flex;
+    align-items: center;
+    width: 100vw;
+    height: 10vh;
+
+    h2 {
+      flex-grow: 1;
+      margin-left: 5vw;
+      color: white;
+      margin-top: 0rem;
+    }
+    svg {
+      margin-right: 5vw;
+    }
+
+    .badge-info {
+      border-radius: 30px;
+      width: 20px;
+      height: 20px;
+      background-color: rgb(255, 0, 0);
+      position: absolute;
+      top: 1vh;
+      right: 2vw;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .panier_content {
+      position: fixed;
+      top: 22vh;
+      background-color: rgb(255, 255, 255);
+      color: black;
+      border-radius: 10px;
+      border: 3px solid rgb(0, 128, 122);
+      right: 2vw;
+      padding: 1rem;
+      max-height: 30vh;
+      overflow-y: scroll;
+
+      button {
+        height: 50px;
+        max-width: 300px;
+        background-color: rgb(0, 128, 117);
+        color: white;
+        margin-top: 0;
+        margin-bottom: 10px;
+      }
+
+      p {
+        padding: 0.5rem;
+        font-weight: bold;
+      }
+
+      li {
+        display: flex;
+
+        p {
+          flex-grow: 1;
+        }
+      }
+    }
+  }
+
+  .panier_client {
+    top: 0;
+  }
+
+  .panier_content_client {
+    position: fixed;
+    top: 12vh;
+    background-color: rgb(255, 255, 255);
+    color: black;
+    border-radius: 10px;
+    border: 3px solid rgb(0, 128, 122);
+    right: 2vw;
+    padding: 1rem;
+    max-height: 30vh;
+    overflow-y: scroll;
+
+    button {
+      height: 50px;
+      max-width: 300px;
+      background-color: rgb(0, 128, 117);
+      color: white;
+      margin-top: 0;
+      margin-bottom: 10px;
+    }
+
+    p {
+      padding: 0.5rem;
+      font-weight: bold;
+    }
+
+    li {
+      display: flex;
+
+      p {
+        flex-grow: 1;
+      }
+    }
+  }
 }
