@@ -1,0 +1,51 @@
+.formProduct {
+  .textarea {
+    width: calc(100% - 2.1rem);
+    padding: 1rem;
+    border-radius: 3px;
+    border-color: rgb(196, 196, 196);
+    margin-top: 0.5rem;
+    font-size: 1rem;
+
+    &:focus {
+      outline: none;
+    }
+
+    &:focus::placeholder {
+      color: #348ada;
+      transition: 0.5s;
+    }
+  }
+
+  .subcategory {
+    position: relative;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+
+    input {
+      width: calc(100% - 2.2rem);
+      padding: 1rem;
+      border-radius: 3px;
+      border-color: rgb(196, 196, 196);
+      text-shadow: none;
+      border-width: 1px;
+    }
+
+    label {
+      position: absolute;
+      top: 0.9rem;
+      left: 1rem;
+      color: #757575;
+      transition: 0.2s;
+    }
+    .isFocus {
+      color: #348ada;
+      transform: scale(0.75) translate(-25px, -35px);
+      background-color: white;
+      padding-right: 0.4rem;
+      padding-left: 0.4rem;
+    }
+
+    
+  }
+}

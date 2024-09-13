@@ -4,6 +4,7 @@ import FormTable from "./formTable";
 import UpdateTable from "./updateTable";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import "./table.scss";
 
 const AdminTable = ({ company_id }) => {
   // ***************************************************
@@ -18,8 +19,8 @@ const AdminTable = ({ company_id }) => {
   //************** UseState Update *******************/
   //**************************************************
 
-  const [editingTableId, setEditingTableId] = useState(null); // ID de la table en cours d'édition
-  const [update, setUpdate] = useState(""); // Valeur de la mise à jour spécifique à la table
+  const [editingTableId, setEditingTableId] = useState(null);
+  const [update, setUpdate] = useState("");
   const [openModalUpdate, setOpenModalUpdate] = useState(false);
 
   // *************************************************
@@ -78,7 +79,7 @@ const AdminTable = ({ company_id }) => {
 
   const startDeleting = (id, currentTableNumber) => {
     setEditingTableId(id);
-    setUpdate(currentTableNumber); // Initialiser la valeur à l'actuel numéro de table
+    setUpdate(currentTableNumber);
     setOpenModalDelete(true);
   };
 
@@ -92,7 +93,7 @@ const AdminTable = ({ company_id }) => {
       const response = await axios.put(
         `http://localhost:4000/api/table/update/${id}`,
         {
-          table_number: update, // Nouvelle valeur du numéro de table
+          table_number: update,
           company_id,
         }
       );
@@ -100,17 +101,15 @@ const AdminTable = ({ company_id }) => {
         toast.success("La table a bien été supprimé");
       }
 
-      // Mettre à jour la table localement après la réponse du serveur
       setTables(
         tables.map((table) =>
           table.id === id ? { ...table, table_number: update } : table
         )
       );
 
-      // Sortir du mode édition
       setEditingTableId(null);
       setOpenModalUpdate(false);
-      setUpdate(""); // Réinitialiser l'état de mise à jour
+      setUpdate("");
     } catch (err) {
       toast.error(err.response.data.message);
     }
@@ -118,7 +117,7 @@ const AdminTable = ({ company_id }) => {
 
   const startEditing = (id, currentTableNumber) => {
     setEditingTableId(id);
-    setUpdate(currentTableNumber); // Initialiser la valeur à l'actuel numéro de table
+    setUpdate(currentTableNumber);
     setOpenModalUpdate(true);
   };
 
@@ -143,7 +142,7 @@ const AdminTable = ({ company_id }) => {
       if (response.data) {
         toast.success("La table a été créé avec succès");
       }
-      // Réinitialisez le formulaire après le succès
+
       setTableNumber("");
     } catch (err) {
       toast.error(err.response.data.message);

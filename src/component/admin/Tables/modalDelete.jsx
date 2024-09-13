@@ -8,8 +8,10 @@ const ModalDeleteTable = ({ open, onClose, onSubmit, update }) => {
         Êtes-vous certain(e) de vouloir supprimer la table N° {update}
       </DialogTitle>
       <DialogActions>
-        <Button onClick={onSubmit}>OUI</Button>
-        <Button onClick={onClose}>NON</Button>
+        <Button variant="outlined" color="error" onClick={onSubmit}>
+          OUI
+        </Button>
+        <Button  onClick={onClose}>NON</Button>
       </DialogActions>
     </Dialog>
   );

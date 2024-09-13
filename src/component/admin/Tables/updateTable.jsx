@@ -1,9 +1,7 @@
 /* eslint-disable react/prop-types */
-
-import DeleteIcon from "@mui/icons-material/Delete";
-import EditIcon from "@mui/icons-material/Edit";
 import ModalUpdateTable from "./modalUpdate";
 import ModalDeleteTable from "./modalDelete";
+import { Button } from "@mui/material";
 
 const UpdateTable = ({
   tables,
@@ -27,15 +25,17 @@ const UpdateTable = ({
       {!loading ? (
         tables.map((table) => {
           return (
-            <div key={table.id}>
-              <p>Numéro de table : {table.table_number}</p>
+            <div className="menu_edit_table" key={table.id}>
+              <p>N° {table.table_number}</p>
 
-              <DeleteIcon
-                onClick={() => onDelete(table.id, table.table_number)}
-              />
-              <EditIcon
+              <Button
                 onClick={() => startEditing(table.id, table.table_number)}
-              />
+              >
+                Editer
+              </Button>
+              <Button color="error" onClick={() => onDelete(table.id, table.table_number)}>
+                Supprimer
+              </Button>
             </div>
           );
         })

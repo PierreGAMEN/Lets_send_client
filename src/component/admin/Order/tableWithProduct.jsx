@@ -2,8 +2,8 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline"; // Assurez-vous d'avoir installé Material-UI Icons
-import './tableWithProduct.scss'
-import Client from "../client";
+import "./tableWithProduct.scss";
+import Client from "../../client";
 
 const TablesWithProducts = ({ company_id }) => {
   const [tables, setTables] = useState([]);
@@ -16,12 +16,14 @@ const TablesWithProducts = ({ company_id }) => {
     // Fonction pour récupérer les données
     const fetchTables = async () => {
       try {
-        const response = await axios.get(`http://localhost:4000/api/table/${company_id}`);
+        const response = await axios.get(
+          `http://localhost:4000/api/table/${company_id}`
+        );
         console.log(response);
         setTables(response.data);
         setLoading(false);
       } catch (error) {
-        setError('Erreur lors du chargement des données', error);
+        setError("Erreur lors du chargement des données", error);
         setLoading(false);
       }
     };
@@ -56,15 +58,15 @@ const TablesWithProducts = ({ company_id }) => {
       <Client
         tableNumber={selectedTable.table_number}
         companyId={company_id}
-        table_id = {selectedTable.id}
+        table_id={selectedTable.id}
       />
     );
   }
 
   return (
-    <div className='container_tablePage'>
+    <div className="container_tablePage">
       {tables.map((table) => (
-        <div className='table' key={table.id}>
+        <div className="table" key={table.id}>
           <h3>Table #{table.table_number}</h3>
           {/* Remplacer le lien par un bouton qui sélectionne la table */}
           <div onClick={() => handleSelectTable(table)}>
@@ -72,9 +74,11 @@ const TablesWithProducts = ({ company_id }) => {
           </div>
           {/* Bouton pour afficher ou masquer les détails */}
           <div onClick={() => toggleDetails(table.id)}>
-            {openDetails[table.id] ? 'Masquer les détails' : 'Afficher les détails'}
+            {openDetails[table.id]
+              ? "Masquer les détails"
+              : "Afficher les détails"}
           </div>
-          
+
           {/* Afficher les détails seulement si le bouton est cliqué */}
           {openDetails[table.id] && (
             <>

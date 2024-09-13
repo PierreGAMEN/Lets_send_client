@@ -1,0 +1,12 @@
+.menu_edit_table {
+    display: flex;
+    width: 100%;
+    justify-content: space-around;
+    align-items: center;
+    padding: 0.2rem;
+    border-bottom: 1px solid black;
+
+    p {
+        min-width: 70px;
+    }
+}

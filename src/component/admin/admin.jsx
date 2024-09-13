@@ -4,7 +4,7 @@ import "./admin.scss";
 import axios from "axios";
 import ConnectionPage from "./ConnectionPage";
 import MenuPage from "./MenuPage";
-import HeaderAdmin from "./headerAdmin/headerAdmin";
+import HeaderAdmin from "./Header/headerAdmin";
 import Cookies from "js-cookie";
 import { jwtDecode } from "jwt-decode";
 
