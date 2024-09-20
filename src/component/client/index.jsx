@@ -8,24 +8,88 @@ import {
   sendMessage,
   disconnect,
 } from "../../services/websocketService";
-import './client.scss'
-import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import DeleteIcon from '@mui/icons-material/Delete';
+import "./client.scss";
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import DeleteIcon from "@mui/icons-material/Delete";
+import CommentIcon from "@mui/icons-material/Comment";
+import ModalComment from "./modalComment";
 
-const Client = ({tableNumber, companyId, table_id}) => {
-  // Récupération des paramètres depuis l'URL s'ils existent
-  const { id_company: id_companyParams, id_table: id_tableParams } = useParams();
+const Client = ({ tableNumber, companyId, table_id }) => {
+  // *************************************************
+  //****************** UseParams *********************/
+  //**************************************************
 
-  // Utilisation des paramètres d'URL ou des props
+  const { id_company: id_companyParams, id_table: id_tableParams } =
+    useParams();
+
+  // *************************************************
+  //************** UseState Order ******************/
+  //**************************************************
+  const [cart, setCart] = useState([]);
+  const [openCart, setOpenCart] = useState(false);
+  const [tableId, setTableId] = useState("");
+  const [tableNumberLoaded, setTableNumberLoaded] = useState(null);
+  const [wrongTable, setWrongTable] = useState(false);
+
   const id_company = id_companyParams || companyId;
-  const id_table = id_tableParams || table_id;
+  const id_table = tableId || table_id;
+  const table_number = tableNumberLoaded || tableNumber;
+
+  // *************************************************
+  //************** UseState TotalPrice ***************/
+  //**************************************************
+
+  const [totalPrice, setTotalPrice] = useState(0);
+
+  // *************************************************
+  //************** UseState comment ******************/
+  //**************************************************
+  const [selectedProduct, setSelectedProduct] = useState({
+    id: null,
+    company_id: id_company,
+    name: "",
+    description: "",
+    comment: "",
+    price: null,
+    sub_category: "",
+    category: "",
+  });
+
+  const [openModalComment, setOpenModalComment] = useState(false);
+  const [comment, setComment] = useState("");
+
+  // *************************************************
+  //************** UseState loading Data *************/
+  //**************************************************
 
   const [menu, setMenu] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [cart, setCart] = useState([]);
-  const [totalPrice, setTotalPrice] = useState(0);
-  const [openCart, setOpenCart] = useState(false)
+
+  // *************************************************
+  //****************** Loading Function **************/
+  //**************************************************
+
+  useEffect(() => {
+    async function loadTable() {
+      if (id_tableParams) {
+        try {
+          const response = await axios.get(
+            `http://localhost:4000/api/table/${id_company}/${id_tableParams}`
+          );
+          if (!response.data) {
+            setWrongTable(true);
+          }
+          setTableId(response.data.id);
+          setTableNumberLoaded(response.data.table_number);
+        } catch (err) {
+          toast.error("Erreur lors de la selection de la table", err);
+        }
+      }
+    }
+
+    loadTable();
+  }, [id_tableParams]);
 
   useEffect(() => {
     async function loadMenu() {
@@ -63,26 +127,41 @@ const Client = ({tableNumber, companyId, table_id}) => {
     loadMenu();
   }, [id_company]);
 
-  useEffect(() => {
-    // Connect to WebSocket server
-    connect("ws://localhost:4000/socket");
+  // *************************************************
+  //****************** Comment Function **************/
+  //**************************************************
 
-    return () => {
-      // Clean up WebSocket connection
-      disconnect();
-    };
-  }, []);
-
-  // Fonction pour ajouter un produit au panier
-  const addToCart = (product) => {
-    setCart((prevCart) => [...prevCart, product]);
- 
+  const handleSelectedProduct = (item) => {
+    setSelectedProduct({
+      id: item.id,
+      company_id: id_company,
+      name: item.name,
+      description: item.description,
+      comment: "",
+      price: item.price,
+      sub_category: item.sub_category,
+      category: item.category,
+    });
+    setOpenModalComment(true);
+    setComment("");
   };
 
-  const removeFromCart = (index) => {
-    const newCart = [...cart];
-    newCart.splice(index, 1);
-    setCart(newCart);
+  const handleCloseModalComment = () => {
+    setOpenModalComment(false);
+    setComment("");
+  };
+
+  // *************************************************
+  //************** Create Order Function *************/
+  //**************************************************
+
+  const addToCart = (product) => {
+    const productWithComment = { ...product, comment: comment };
+
+    setCart((prevCart) => [...prevCart, productWithComment]);
+
+    setComment("");
+    setOpenModalComment(false);
   };
 
   const placeOrder = () => {
@@ -95,6 +174,7 @@ const Client = ({tableNumber, companyId, table_id}) => {
       id: item.id,
       name: item.name,
       price: item.price,
+      comment: item.comment,
     }));
 
     const companyId = parseInt(id_company, 10);
@@ -103,19 +183,49 @@ const Client = ({tableNumber, companyId, table_id}) => {
       return;
     }
 
-    sendMessage({
+    // Construire l'objet à envoyer
+    const messageData = {
       action: "createOrder",
       order: {
         items,
-        id_table,
+        id_table: tableId || table_id,
         company_id: companyId,
-        table_number: tableNumber,
+        table_number: id_tableParams || tableNumber,
       },
-    });
+    };
 
+    // Loguer les données avant l'envoi
+    console.log("Sending message:", messageData);
+
+    // Envoyer le message via WebSocket
+    sendMessage(messageData);
     toast.success("Commande envoyée au serveur!");
     setCart([]); // Vider le panier après l'envoi
   };
+
+  const removeFromCart = (index) => {
+    const newCart = [...cart];
+    newCart.splice(index, 1);
+    setCart(newCart);
+  };
+
+  // *************************************************
+  //****************** WebSocket Function **************/
+  //**************************************************
+
+  useEffect(() => {
+    // Connect to WebSocket server
+    connect("ws://localhost:4000/socket");
+
+    return () => {
+      // Clean up WebSocket connection
+      disconnect();
+    };
+  }, []);
+
+  // *************************************************
+  //************* Total Price Function ***************/
+  //**************************************************
 
   const totalCart = () => {
     const totalPrice = cart.reduce(
@@ -132,54 +242,99 @@ const Client = ({tableNumber, companyId, table_id}) => {
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;
 
+  // *************************************************
+  //******************** HTML ************************/
+  //**************************************************
+
   return (
     <main className="container_client">
       {/* Affichage du menu */}
-      {Object.keys(menu).map((category) => (
-        <section key={category}>
-          <h2>{category}</h2>
-          {Object.keys(menu[category]).map((subCategory) => (
-            <div key={subCategory}>
-              <h3>{subCategory}</h3>
-              <ul>
-                {menu[category][subCategory].map((item) => (
-                  <li key={item.id}>
-                    <div>{item.name} - {item.price}€<p>{item.description}</p></div>
-                    <button className="button_Add_cart" onClick={() => addToCart(item)}>
-                      Ajouter
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </section>
-      ))}
+      {!wrongTable ? (
+        Object.keys(menu).map((category) => (
+          <section key={category}>
+            <h2>{category}</h2>
+            {Object.keys(menu[category]).map((subCategory) => (
+              <div key={subCategory}>
+                <h3>{subCategory}</h3>
+                <ul>
+                  {menu[category][subCategory].map((item) => (
+                    <li key={item.id}>
+                      <div>
+                        {item.name} - {item.price}€<p>{item.description}</p>
+                      </div>
+                      <CommentIcon
+                        onClick={() => handleSelectedProduct(item)}
+                      />
+                      <button
+                        className="button_Add_cart"
+                        onClick={() => addToCart(item)}
+                      >
+                        Ajouter
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </section>
+        ))
+      ) : (
+        <div>
+          La table que vous avez selectionnée ne correspond a aucune de nos
+          tables. Merci de prendre contact avec le serveur.
+        </div>
+      )}
+      <ModalComment
+        open={openModalComment}
+        onClose={handleCloseModalComment}
+        comment={comment}
+        setComment={setComment}
+        addToCart={() => addToCart(selectedProduct)}
+      />
 
       {/* Affichage du panier */}
-      <section className={`panier ${!companyId ? 'panier_client' : ''}`}>
-      {tableNumber ? <h2>TABLE N°{tableNumber}</h2> : <h2>TABLE N°{id_table}</h2>}
+      <section className={`panier ${!companyId ? "panier_client" : ""}`}>
+        {tableNumber ? (
+          <h2>TABLE N°{table_number}</h2>
+        ) : (
+          <h2>TABLE N°{table_number}</h2>
+        )}
         <div>
-        <ShoppingCartIcon onClick={() => {setOpenCart(!openCart)}}/>
+          <ShoppingCartIcon
+            onClick={() => {
+              setOpenCart(!openCart);
+            }}
+          />
           {cart.length > 0 && <span className="badge-info">{cart.length}</span>}
-          </div>
-          {openCart && <div className={` ${!companyId ? 'panier_content_client' : 'panier_content'}`}>
-            {cart.length > 0 ? <button onClick={placeOrder}>Lancer la commande</button> : <div>Votre panier est vide</div>}
+        </div>
+        {openCart && (
+          <div
+            className={` ${
+              !companyId ? "panier_content_client" : "panier_content"
+            }`}
+          >
+            {cart.length > 0 ? (
+              <button onClick={placeOrder}>Lancer la commande</button>
+            ) : (
+              <div>Votre panier est vide</div>
+            )}
             {cart.map((item, index) => (
               <li key={index}>
-                <p>{item.name} - {item.price}€</p>
-                <span><DeleteIcon onClick={() => removeFromCart(index)}/></span>
+                <p>
+                  {item.name} - {item.price}€
+                </p>
+                <span>
+                  <DeleteIcon onClick={() => removeFromCart(index)} />
+                </span>
               </li>
             ))}
             {cart.length > 0 && (
-          <>
-            <p>Total: {totalPrice}€</p>
-            
-          </>
+              <>
+                <p>Total: {totalPrice}€</p>
+              </>
+            )}
+          </div>
         )}
-          </div>}
-
-        
       </section>
     </main>
   );
