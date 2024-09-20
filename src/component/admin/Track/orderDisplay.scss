@@ -31,7 +31,21 @@
             list-style-type: none;
             display: flex;
             align-items: center;
-      
+            
+
+            p {
+                display: flex;
+                gap: 0.5rem;
+         
+
+                span{
+                    color: red;
+                    font-size: 10px;
+                }
+          
+
+            }
+            
 
             .product {
                 flex-grow: 1;
