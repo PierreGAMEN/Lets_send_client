@@ -2,6 +2,9 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import "./orderDisplay.scss";
+import EmergencyIcon from "@mui/icons-material/Emergency";
+import ModalCommentTrack from "./ModalComment";
+import Payment from "../Payment";
 
 const OrderDisplay = ({ company_id }) => {
   const [orders, setOrders] = useState([]);
@@ -12,8 +15,23 @@ const OrderDisplay = ({ company_id }) => {
   const [filter, setFilter] = useState("all");
   const [activeButton, setActiveButton] = useState("all");
   const [step, setStep] = useState("menu"); // Étape : "menu", "tableList", ou "orderList"
-  const [selectedTable, setSelectedTable] = useState(null); // Table sélectionnée
+  const [selectedTable, setSelectedTable] = useState({
+    id: null,
+    table_number: "",
+  }); // Table sélectionnée
   const [availableTables, setAvailableTables] = useState([]); // Liste des tables disponibles
+  const [selectedOrder, setSelectedOrder] = useState(null);
+  const [openModalComment, setOpenModalComment] = useState(false);
+
+  const openComment = (order) => {
+    setSelectedOrder(order);
+    setOpenModalComment(true);
+  };
+
+  const handleCloseModal = () => {
+    setSelectedOrder(null);
+    setOpenModalComment(false);
+  };
 
   const fetchOrders = async () => {
     try {
@@ -21,13 +39,19 @@ const OrderDisplay = ({ company_id }) => {
         params: { company_id },
       });
       setOrders(response.data);
-      console.log(response)
+      console.log(response);
 
-      // Récupérer la liste unique des tables à partir des commandes
+      // Récupérer une liste unique d'objets { id: table_id, table_number: table_number }
       const tables = Array.from(
-        new Set(response.data.map((order) => order.table_id))
+        new Map(
+          response.data.map((order) => [
+            order.table_id,
+            { id: order.table_id, table_number: order.table_number },
+          ])
+        ).values()
       );
-      setAvailableTables(tables); // Mise à jour des tables disponibles
+
+      setAvailableTables(tables); // Mise à jour des tables disponibles avec objets {id, table_number}
     } catch (err) {
       setError(err.message);
     } finally {
@@ -80,7 +104,7 @@ const OrderDisplay = ({ company_id }) => {
   };
 
   const filteredOrders = orders.filter((order) => {
-    if (selectedTable) return order.table_id === selectedTable;
+    if (selectedTable.id) return order.table_id === selectedTable.id;
     if (filter === "kitchen")
       return (
         order.product.category !== "Boisson" && order.status === "preparation"
@@ -95,7 +119,7 @@ const OrderDisplay = ({ company_id }) => {
   });
 
   const resetFilters = () => {
-    setSelectedTable(null); // Réinitialiser la table sélectionnée
+    setSelectedTable({ id: null, table_number: "" }); // Réinitialiser la table sélectionnée
     setFilter("all"); // Réinitialiser le filtre
     setActiveButton("all"); // Réinitialiser le bouton actif
   };
@@ -131,11 +155,14 @@ const OrderDisplay = ({ company_id }) => {
               <li key={table}>
                 <button
                   onClick={() => {
-                    setSelectedTable(table); // Sélectionner la table
+                    setSelectedTable({
+                      id: table.id,
+                      table_number: table.table_number,
+                    }); // Sélectionner la table
                     setStep("orderList"); // Passer à l'étape d'affichage des commandes
                   }}
                 >
-                  Table {table}
+                  Table {table.table_number}
                 </button>
               </li>
             ))}
@@ -153,65 +180,79 @@ const OrderDisplay = ({ company_id }) => {
 
       {/* Étape 3 : Affichage des commandes */}
       {step === "orderList" && (
-        <>
-          <div className="filter_container">
-            <button
-              className={activeButton === "all" ? "active" : ""}
-              onClick={() => {
-                setFilter("all");
-                setActiveButton("all");
-              }}
-            >
-              Tout
-            </button>
-            <button
-              className={activeButton === "kitchen" ? "active" : ""}
-              onClick={() => {
-                setFilter("kitchen");
-                setActiveButton("kitchen");
-              }}
-            >
-              Cuisine
-            </button>
-            <button
-              className={activeButton === "drinks" ? "active" : ""}
-              onClick={() => {
-                setFilter("drinks");
-                setActiveButton("drinks");
-              }}
-            >
-              Bar
-            </button>
-            <button
-              className={activeButton === "ready" ? "active" : ""}
-              onClick={() => {
-                setFilter("ready");
-                setActiveButton("ready");
-              }}
-            >
-              Service
-            </button>
-            <button
-              className={activeButton === "finish" ? "active" : ""}
-              onClick={() => {
-                setFilter("finish");
-                setActiveButton("finish");
-              }}
-            >
-              Terminé
-            </button>
-          </div>
+        <div>
+          {!selectedTable.id && (
+            <div className="filter_container">
+              <button
+                className={activeButton === "all" ? "active" : ""}
+                onClick={() => {
+                  setFilter("all");
+                  setActiveButton("all");
+                }}
+              >
+                Tout
+              </button>
+              <button
+                className={activeButton === "kitchen" ? "active" : ""}
+                onClick={() => {
+                  setFilter("kitchen");
+                  setActiveButton("kitchen");
+                }}
+              >
+                Cuisine
+              </button>
+              <button
+                className={activeButton === "drinks" ? "active" : ""}
+                onClick={() => {
+                  setFilter("drinks");
+                  setActiveButton("drinks");
+                }}
+              >
+                Bar
+              </button>
+              <button
+                className={activeButton === "ready" ? "active" : ""}
+                onClick={() => {
+                  setFilter("ready");
+                  setActiveButton("ready");
+                }}
+              >
+                Service
+              </button>
+              <button
+                className={activeButton === "finish" ? "active" : ""}
+                onClick={() => {
+                  setFilter("finish");
+                  setActiveButton("finish");
+                }}
+              >
+                Terminé
+              </button>
+            </div>
+          )}
 
-          {selectedTable && <h3>Commandes pour la table {selectedTable}</h3>}
+          {selectedTable.id && (
+            <h3>Commandes pour la table {selectedTable.table_number}</h3>
+          )}
           {filteredOrders.length === 0 ? (
             <p>Aucune commande trouvée</p>
           ) : (
             <ul>
               {filteredOrders.map((order) => (
                 <li key={order.id}>
-                  <p className="product">
-                    Table {order.table_number} - {order.product.name}
-                  </p>
+                  {order.comment ? (
+                    <p onClick={() => openComment(order)} className="product">
+                      Table {order.table_number} - {order.product.name}
+                      <span className="asterix">
+                        <EmergencyIcon fontSize="" />
+                      </span>
+                    </p>
+                  ) : (
+                    <p className="product">
+                      Table {order.table_number} - {order.product.name}
+                    </p>
+                  )}
+
                   <div className="status">
                     <p>Statut:</p>
                     <select
@@ -229,6 +270,14 @@ const OrderDisplay = ({ company_id }) => {
               ))}
             </ul>
           )}
+          {selectedTable.id && <Payment order={filteredOrders}/>}
+          {openModalComment && (
+            <ModalCommentTrack
+              open={openModalComment}
+              onClose={handleCloseModal}
+              selectedOrder={selectedOrder}
+            />
+          )}
           <button
             onClick={() => {
               resetFilters(); // Réinitialiser les filtres lors du retour au menu
@@ -237,7 +286,7 @@ const OrderDisplay = ({ company_id }) => {
           >
             Retour au menu
           </button>
-        </>
+        </div>
       )}
     </div>
   );
