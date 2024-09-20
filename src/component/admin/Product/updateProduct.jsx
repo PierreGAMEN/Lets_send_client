@@ -3,15 +3,22 @@ import { useEffect, useState } from "react";
 import "./updateProduct.scss";
 import axios from "axios";
 import { toast } from "react-toastify";
+import UpdateProductModal from "./updateFormModal";
+import ModalDeleteProduct from "./modalDeleteProduct";
 
-const UpdateProduct = ({company_id}) => {
+const UpdateProduct = ({ company_id }) => {
   const [menu, setMenu] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [editProduct, setEditProduct] = useState(null); // État pour le produit à modifier
   const [showEditModal, setShowEditModal] = useState(false); // État pour afficher/masquer la modale
-
+  const [isFocus, setIsFocus] = useState(false);
   const id_company = 1;
+  const [productToDelete, setProductToDelete] = useState({
+    id: null,
+    name: "",
+  });
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   useEffect(() => {
     async function loadMenu() {
@@ -48,6 +55,14 @@ const UpdateProduct = ({company_id}) => {
 
     loadMenu();
   }, [id_company]);
+
+  const openModalDeleteProductFunction = (product) => {
+    setProductToDelete({
+      id: product.id,
+      name: product.name,
+    });
+    setShowDeleteModal(true);
+  };
 
   const handleDelete = async (productId) => {
     try {
@@ -117,7 +132,11 @@ const UpdateProduct = ({company_id}) => {
                     <li key={item.id}>
                       <p>{item.name}</p>
                       <div className="container_button">
-                        <button onClick={() => handleDelete(item.id)}>
+                        <button
+                          onClick={() =>
+                            openModalDeleteProductFunction(item)
+                          }
+                        >
                           Supprimer
                         </button>
                         <button onClick={() => handleEdit(item)}>
@@ -133,83 +152,30 @@ const UpdateProduct = ({company_id}) => {
         ))}
 
       {showEditModal && (
-        <div className="modal">
-          <h2>Modifier le Produit</h2>
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              handleUpdateProduct();
-            }}
-          >
-            <div>
-              <label>Nom du produit:</label>
-              <input
-                type="text"
-                value={editProduct.name}
-                onChange={(e) =>
-                  setEditProduct({ ...editProduct, name: e.target.value })
-                }
-                required
-              />
-            </div>
-            <div>
-              <label>Description:</label>
-              <textarea
-                value={editProduct.description}
-                onChange={(e) =>
-                  setEditProduct({
-                    ...editProduct,
-                    description: e.target.value,
-                  })
-                }
-                required
-              />
-            </div>
-            <div>
-              <label>Prix:</label>
-              <input
-                type="number"
-                value={editProduct.price}
-                onChange={(e) =>
-                  setEditProduct({
-                    ...editProduct,
-                    price: parseFloat(e.target.value),
-                  })
-                }
-                required
-              />
-            </div>
-            <div>
-              <label>Catégorie:</label>
-              <input
-                type="text"
-                value={editProduct.category}
-                onChange={(e) =>
-                  setEditProduct({ ...editProduct, category: e.target.value })
-                }
-                required
-              />
-            </div>
-            <div>
-              <label>Sous-catégorie:</label>
-              <input
-                type="text"
-                value={editProduct.sub_category}
-                onChange={(e) =>
-                  setEditProduct({
-                    ...editProduct,
-                    sub_category: e.target.value,
-                  })
-                }
-                required
-              />
-            </div>
-            <button type="submit">Sauvegarder</button>
-            <button type="button" onClick={() => setShowEditModal(false)}>
-              Annuler
-            </button>
-          </form>
-        </div>
+        <UpdateProductModal
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleUpdateProduct();
+          }}
+          editProduct={editProduct}
+          setEditProduct={setEditProduct}
+          onClose={() => setShowEditModal(false)}
+          open={showEditModal}
+          isFocus={isFocus}
+          setIsFocus={setIsFocus}
+        />
+      )}
+      {showDeleteModal && (
+        <ModalDeleteProduct
+          open={showDeleteModal}
+          product={productToDelete}
+          onClose={() => {
+            setShowDeleteModal(false);
+          }}
+          onSubmit={() => {
+            handleDelete(productToDelete.id);
+          }}
+        />
       )}
     </section>
   );

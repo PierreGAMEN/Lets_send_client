@@ -4,6 +4,7 @@ import FormProduct from "./formProduct";
 // import UpdateProduct from "./updateProduct";
 import axios from "axios";
 import { useState } from "react";
+import UpdateProduct from "./updateProduct";
 
 const ProductMenu = ({ company_id }) => {
   // *************************************************
@@ -86,7 +87,7 @@ const ProductMenu = ({ company_id }) => {
         price={price}
         setPrice={setPrice}
       />
-      {/* <UpdateProduct /> */}
+      <UpdateProduct company_id={company_id}/>
     </section>
   );
 };
