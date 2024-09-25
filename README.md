@@ -40,7 +40,7 @@ L'objectif est de fournir une solution intuitive pour faciliter les opérations 
 
 ![Product Menu](./src/assets/menu.png)
 
-**Menu suivi des commandes** : Menu de suivi qui affiche les commandes en cours pour toutes les tables de l'établissement.
+**Menu suivi des commandes** : Menu de suivi qui propose deux manières de suivre les commandes, a savoir le suivi par commande individuelle ou par table.
 
 ![Order Tracker Menu](./src/assets/order_traker_menu.png)
 
@@ -48,6 +48,6 @@ L'objectif est de fournir une solution intuitive pour faciliter les opérations 
 
 ![Order Tracker by Table](./src/assets/traker_by_table.png)
 
-**Suivi par commande** : Suivi des commandes regroupées individuellement, permettant de voir le détail de chaque commande.
+**Suivi par commande** : Suivi des commandes regroupées individuellement. Permettant à un service (bar, cuisine, service) de voir spécifiquement les tâches qui lui sont associées.
 
 ![Order Tracker by Order](./src/assets/traker_by_order.png)
