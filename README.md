@@ -26,3 +26,10 @@ L'objectif est de fournir une solution intuitive pour faciliter les opérations 
 - **Axios** : Utilisé pour les appels API vers le back-end.
 - **WebSockets** : Pour la mise à jour en temps réel de l'état des commandes.
 
+## Screenshot
+
+**Home** : Accueil qui diffère en fonction de l'utilisateur. Ici, il s'agit de l'admin, il peut créer des tables et des produits pour la carte.
+![Home page](src\assets\home.png)
+
+**Menu commander** : Menu qui affiche toutes les tables de l'établissement et qui permet de commander des produits pour une table spécifique. 
+![Order Menu](src\assets\order.png)
