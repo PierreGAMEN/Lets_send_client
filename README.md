@@ -28,8 +28,20 @@ L'objectif est de fournir une solution intuitive pour faciliter les opérations 
 
 ## Screenshot
 
-**Home** : Accueil qui diffère en fonction de l'utilisateur. Ici, il s'agit de l'admin, il peut créer des tables et des produits pour la carte.
+**Home** : Page d'accueil qui diffère en fonction de l'utilisateur. Ici, il s'agit de l'admin, qui peut créer des tables et des produits pour la carte.
 ![Home page](./src/assets/home.png)
 
-**Menu commander** : Menu qui affiche toutes les tables de l'établissement et qui permet de commander des produits pour une table spécifique. 
+**Menu commander** : Menu qui affiche toutes les tables de l'établissement et permet de commander des produits pour une table spécifique.
 ![Order Menu](./src/assets/order.png)
+
+**Carte des produits** : Affiche les produits disponibles pour commande dans l'établissement, permettant de sélectionner des articles à ajouter aux tables.
+![Product Menu](./src/assets/menu.png)
+
+**Menu suivi des commandes** : Menu de suivi qui affiche les commandes en cours pour toutes les tables de l'établissement.
+![Order Tracker Menu](./src/assets/order_traker_menu.png)
+
+**Suivi par table** : Suivi des commandes regroupées par table, permettant de voir les commandes spécifiques à chaque table.
+![Order Tracker by Table](./src/assets/traker_by_table.png)
+
+**Suivi par commande** : Suivi des commandes regroupées individuellement, permettant de voir le détail de chaque commande.
+![Order Tracker by Order](./src/assets/traker_by_order.png)
