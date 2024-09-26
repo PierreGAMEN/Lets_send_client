@@ -5,6 +5,12 @@ import "./orderDisplay.scss";
 import EmergencyIcon from "@mui/icons-material/Emergency";
 import ModalCommentTrack from "./ModalComment";
 import Payment from "../Payment";
+import DeleteIcon from "@mui/icons-material/Delete";
+import ModalDeleteOrder from "./ModalDelete";
+import { Button } from "@mui/material";
+import TableRestaurantIcon from "@mui/icons-material/TableRestaurant";
+import FormatListNumberedIcon from "@mui/icons-material/FormatListNumbered";
+const apiUrl = import.meta.env.VITE_API_URL;
 
 const OrderDisplay = ({ company_id }) => {
   const [orders, setOrders] = useState([]);
@@ -22,6 +28,18 @@ const OrderDisplay = ({ company_id }) => {
   const [availableTables, setAvailableTables] = useState([]); // Liste des tables disponibles
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [openModalComment, setOpenModalComment] = useState(false);
+  const [openDeleteModal, setOpenDeleteModal] = useState(false);
+
+  const openDelete = (order) => {
+    setSelectedOrder(null);
+    setSelectedOrder(order);
+    setOpenDeleteModal(true);
+  };
+
+  const OnCloseDeleteModal = () => {
+    setOpenDeleteModal(false);
+    setSelectedOrder(null);
+  };
 
   const openComment = (order) => {
     setSelectedOrder(order);
@@ -35,7 +53,7 @@ const OrderDisplay = ({ company_id }) => {
 
   const fetchOrders = async () => {
     try {
-      const response = await axios.get(`http://localhost:4000/api/order/all`, {
+      const response = await axios.get(`${apiUrl}/api/order/all`, {
         params: { company_id },
       });
       setOrders(response.data);
@@ -64,7 +82,7 @@ const OrderDisplay = ({ company_id }) => {
   }, [company_id]);
 
   useEffect(() => {
-    const newWs = new WebSocket("ws://localhost:4000");
+    const newWs = new WebSocket("ws://192.168.1.19:4000");
 
     newWs.onopen = () => {
       console.log("WebSocket connecté");
@@ -89,7 +107,7 @@ const OrderDisplay = ({ company_id }) => {
 
   const handleStatusChange = async (orderId, newStatus) => {
     try {
-      await axios.put(`http://localhost:4000/api/order/${orderId}/status`, {
+      await axios.put(`${apiUrl}/api/order/${orderId}/status`, {
         status: newStatus,
       });
       if (ws && ws.readyState === WebSocket.OPEN) {
@@ -97,9 +115,62 @@ const OrderDisplay = ({ company_id }) => {
           JSON.stringify({ action: "orderUpdated", orderId, status: newStatus })
         );
       }
-      fetchOrders();
     } catch (err) {
       setError("Erreur lors de la mise à jour du statut.", err);
+    }
+  };
+
+  const handlePaymentStatusChange = async (orderId) => {
+    try {
+      await axios.put(`${apiUrl}/api/order/payment/${orderId}`, {
+        payment: true,
+      });
+      if (ws && ws.readyState === WebSocket.OPEN) {
+        ws.send(
+          JSON.stringify({
+            action: "orderPaymentUpdated",
+            orderId,
+            payment: true,
+          })
+        );
+      }
+    } catch (err) {
+      setError("Erreur lors de la mise à jour du statut.", err);
+    }
+  };
+
+  const handleDeleteOrder = async (order) => {
+    try {
+      await axios.delete(`${apiUrl}/api/order/delete/${order.id}`);
+
+      if (ws && ws.readyState === WebSocket.OPEN) {
+        ws.send(JSON.stringify({ action: "orderDeleted" }));
+      }
+    } catch (err) {
+      setError("Erreur lors de la suppression de la commande.", err);
+    }
+  };
+
+  const handleCreateTransaction = async (amount, company_id, selfPayment) => {
+    try {
+      const currentDate = new Date().toISOString();
+
+      const response = await axios.post(
+        `${apiUrl}/api/transaction/create`,
+        {
+          amount: amount,
+          date: currentDate,
+          self_payment: selfPayment,
+          company_id: company_id,
+        }
+      );
+
+      console.log("Transaction créée avec succès : ", response.data);
+
+      return response.data;
+    } catch (error) {
+      console.error("Erreur lors de la création de la transaction : ", error);
+      throw error;
     }
   };
 
@@ -129,52 +200,61 @@ const OrderDisplay = ({ company_id }) => {
 
   return (
     <div className="orderDisplay">
-      <h2>Suivi des commandes</h2>
+      <h3>Suivi des commandes</h3>
 
       {/* Étape 1 : Menu Intermédiaire */}
       {step === "menu" && (
         <div className="menu">
-          <button
+          <Button
             onClick={() => {
               resetFilters(); // Réinitialiser les filtres avant de voir toutes les commandes
               setStep("orderList");
             }}
           >
-            Voir toutes les commandes
-          </button>
-          <button onClick={() => setStep("tableList")}>Suivre par table</button>
+            <p>Suivi par commande</p>
+            <span>
+              <FormatListNumberedIcon />
+            </span>
+          </Button>
+          <Button onClick={() => setStep("tableList")}>
+            <p>Suivi par table et paiement</p>{" "}
+            <span>
+              <TableRestaurantIcon />
+            </span>
+          </Button>
         </div>
       )}
 
       {/* Étape 2 : Liste des tables */}
       {step === "tableList" && (
         <div className="tableList">
-          <h3>Choisissez une table</h3>
+          <h4>Choisissez une table à suivre</h4>
           <ul>
             {availableTables.map((table) => (
-              <li key={table}>
-                <button
-                  onClick={() => {
-                    setSelectedTable({
-                      id: table.id,
-                      table_number: table.table_number,
-                    }); // Sélectionner la table
-                    setStep("orderList"); // Passer à l'étape d'affichage des commandes
-                  }}
-                >
-                  Table {table.table_number}
-                </button>
+              <li
+                onClick={() => {
+                  setSelectedTable({
+                    id: table.id,
+                    table_number: table.table_number,
+                  }); // Sélectionner la table
+                  setStep("orderList"); // Passer à l'étape d'affichage des commandes
+                }}
+                key={table}
+              >
+                <Button>Table N°{table.table_number}</Button>
+                <span>Cliquez pour suivre cette table</span>
               </li>
             ))}
           </ul>
-          <button
+          <Button
+            className="previous"
             onClick={() => {
               resetFilters(); // Réinitialiser les filtres lors du retour au menu
               setStep("menu");
             }}
           >
             Retour
-          </button>
+          </Button>
         </div>
       )}
 
@@ -183,7 +263,7 @@ const OrderDisplay = ({ company_id }) => {
         <div>
           {!selectedTable.id && (
             <div className="filter_container">
-              <button
+              <Button
                 className={activeButton === "all" ? "active" : ""}
                 onClick={() => {
                   setFilter("all");
@@ -191,8 +271,8 @@ const OrderDisplay = ({ company_id }) => {
                 }}
               >
                 Tout
-              </button>
-              <button
+              </Button>
+              <Button
                 className={activeButton === "kitchen" ? "active" : ""}
                 onClick={() => {
                   setFilter("kitchen");
@@ -200,8 +280,8 @@ const OrderDisplay = ({ company_id }) => {
                 }}
               >
                 Cuisine
-              </button>
-              <button
+              </Button>
+              <Button
                 className={activeButton === "drinks" ? "active" : ""}
                 onClick={() => {
                   setFilter("drinks");
@@ -209,8 +289,8 @@ const OrderDisplay = ({ company_id }) => {
                 }}
               >
                 Bar
-              </button>
-              <button
+              </Button>
+              <Button
                 className={activeButton === "ready" ? "active" : ""}
                 onClick={() => {
                   setFilter("ready");
@@ -218,8 +298,8 @@ const OrderDisplay = ({ company_id }) => {
                 }}
               >
                 Service
-              </button>
-              <button
+              </Button>
+              <Button
                 className={activeButton === "finish" ? "active" : ""}
                 onClick={() => {
                   setFilter("finish");
@@ -227,50 +307,76 @@ const OrderDisplay = ({ company_id }) => {
                 }}
               >
                 Terminé
-              </button>
+              </Button>
             </div>
           )}
 
-          {selectedTable.id && (
-            <h3>Commandes pour la table {selectedTable.table_number}</h3>
-          )}
-          {filteredOrders.length === 0 ? (
-            <p>Aucune commande trouvée</p>
-          ) : (
-            <ul>
-              {filteredOrders.map((order) => (
-                <li key={order.id}>
-                  {order.comment ? (
-                    <p onClick={() => openComment(order)} className="product">
-                      Table {order.table_number} - {order.product.name}
-                      <span className="asterix">
-                        <EmergencyIcon fontSize="" />
-                      </span>
-                    </p>
-                  ) : (
-                    <p className="product">
-                      Table {order.table_number} - {order.product.name}
-                    </p>
-                  )}
+          <div className="table_order">
+            {selectedTable.id && (
+              <h4>Commandes pour la table {selectedTable.table_number}</h4>
+            )}
+            {filteredOrders.length === 0 ? (
+              <p>Aucune commande trouvée</p>
+            ) : (
+              <ul>
+                {filteredOrders.map((order) => (
+                  <li key={order.id}>
+                    <div className="header">
+                      {order.comment ? (
+                        <p
+                          onClick={() => openComment(order)}
+                          className="product"
+                        >
+                          {!selectedTable.id && `Table ${order.table_number} -`}{" "}
+                          {order.product.name}
+                          <span className="asterix">
+                            <EmergencyIcon fontSize="" />
+                          </span>
+                        </p>
+                      ) : (
+                        <p className="product">
+                          {!selectedTable.id && `Table ${order.table_number} -`}{" "}
+                          Produit: {order.product.name}
+                        </p>
+                      )}
 
-                  <div className="status">
-                    <p>Statut:</p>
-                    <select
-                      value={order.status}
-                      onChange={(e) =>
-                        handleStatusChange(order.id, e.target.value)
-                      }
-                    >
-                      <option value="preparation">Préparation</option>
-                      <option value="ready">À Servir</option>
-                      <option value="finish">Terminé</option>
-                    </select>
-                  </div>
-                </li>
-              ))}
-            </ul>
+                      <div className="status">
+                        <p>Statut:</p>
+                        <select
+                          value={order.status}
+                          onChange={(e) =>
+                            handleStatusChange(order.id, e.target.value)
+                          }
+                        >
+                          <option value="preparation">Préparation</option>
+                          <option value="ready">À Servir</option>
+                          <option value="finish">Terminé</option>
+                        </select>
+                      </div>
+                    </div>
+                    <DeleteIcon onClick={() => openDelete(order)} />
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+          {openDeleteModal && (
+            <ModalDeleteOrder
+              open={openDeleteModal}
+              order={selectedOrder}
+              onClose={OnCloseDeleteModal}
+              onSubmit={() => handleDeleteOrder(selectedOrder)}
+            />
           )}
-          {selectedTable.id && <Payment order={filteredOrders}/>}
+          {selectedTable.id && filteredOrders.length > 0 && (
+            <Payment
+              order={filteredOrders}
+              handleDeleteOrder={handleDeleteOrder}
+              handlePaymentStatusChange={handlePaymentStatusChange}
+              handleCreateTransaction={handleCreateTransaction}
+              company_id={company_id}
+            />
+          )}
           {openModalComment && (
             <ModalCommentTrack
               open={openModalComment}
@@ -278,14 +384,15 @@ const OrderDisplay = ({ company_id }) => {
               selectedOrder={selectedOrder}
             />
           )}
-          <button
+          <Button
+            className="first_menu_button"
             onClick={() => {
               resetFilters(); // Réinitialiser les filtres lors du retour au menu
               setStep("menu");
             }}
           >
             Retour au menu
-          </button>
+          </Button>
         </div>
       )}
     </div>

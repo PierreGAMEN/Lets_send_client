@@ -1,11 +1,13 @@
 /* eslint-disable react/prop-types */
 // PersonalInfo.jsx
 
+import { Button } from "@mui/material";
+
 const PersonalInfo = ({
   username,
   role,
   setOpenModalPersonalInfo,
-  openChangePasswordModal, 
+  openChangePasswordModal,
 }) => {
   return (
     <div className="container_personal_info">
@@ -18,19 +20,19 @@ const PersonalInfo = ({
           Rôle : <span>{role}</span>
         </p>
       </div>
-      <div className="container_button">
-        <button onClick={() => setOpenModalPersonalInfo(true)}>
+      <div className="container_Button">
+        <Button onClick={() => setOpenModalPersonalInfo(true)}>
           Modifier vos informations
-        </button>
+        </Button>
         {role === "admin" && (
-          <button onClick={openChangePasswordModal}>
+          <Button onClick={openChangePasswordModal}>
             Modifier le mot de passe
-          </button>
+          </Button>
         )}
         {role === "personal" && (
-          <button onClick={openChangePasswordModal}>
+          <Button onClick={openChangePasswordModal}>
             Changer le mot de passe
-          </button>
+          </Button>
         )}
       </div>
     </div>

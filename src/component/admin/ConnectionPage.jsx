@@ -1,3 +1,5 @@
+import { Button, TextField, Typography, Box } from "@mui/material";
+
 /* eslint-disable react/prop-types */
 const ConnectionPage = ({
   formInput,
@@ -5,36 +7,42 @@ const ConnectionPage = ({
   handleFormAuthentification,
 }) => {
   return (
-    <div className="page1">
-      
-      <p>
+    <Box className="page1" sx={{ padding: 2 }}>
+      <Typography variant="h6" gutterBottom>
         Bienvenue sur l&apos;application Let&apos;s send. Veuillez vous
         connecter pour accéder à nos services.
-      </p>
+      </Typography>
       <form onSubmit={handleFormAuthentification}>
-        <div>
-          <label htmlFor="username">Username</label>
-          <input
-            type="text"
+        <Box mb={2}>
+          <TextField
+            fullWidth
+            label="Username"
+            variant="outlined"
             id="username"
             name="username"
             value={formInput.username}
             onChange={handleChange}
+            required
           />
-        </div>
-        <div>
-          <label htmlFor="password">Password</label>
-          <input
+        </Box>
+        <Box mb={2}>
+          <TextField
+            fullWidth
+            label="Password"
             type="password"
+            variant="outlined"
             id="password"
             name="password"
             value={formInput.password}
             onChange={handleChange}
+            required
           />
-        </div>
-        <button type="submit">Se connecter</button>
+        </Box>
+        <Button variant="contained" type="submit" color="primary">
+          Se connecter
+        </Button>
       </form>
-    </div>
+    </Box>
   );
 };
 

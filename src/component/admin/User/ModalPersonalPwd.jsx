@@ -12,7 +12,7 @@ const ChangePasswordDialog = ({
   onClose,
   handleChange,
   handleSubmit,
-  formData
+  formData,
 }) => {
   return (
     <Dialog open={open} onClose={onClose}>

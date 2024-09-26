@@ -1,26 +1,24 @@
 .container_client {
-
   padding: 1rem;
-  margin-top: 15vh;
+  margin-top: 8vh;
 
   h2 {
     color: rgb(0, 128, 107);
     margin-top: 1rem;
   }
 
-  button {
+  Button {
     width: 100%;
     padding: 0.5rem;
     border-radius: 10px;
-    border:none;
+    border: none;
   }
 
- 
   h3 {
     margin-top: 1rem;
   }
 
-  .button_Add_cart {
+  .Button_Add_cart {
     margin-top: 0;
   }
 
@@ -92,7 +90,7 @@
       max-height: 30vh;
       overflow-y: scroll;
 
-      button {
+      Button {
         height: 50px;
         max-width: 300px;
         background-color: rgb(0, 128, 117);
@@ -132,7 +130,7 @@
     max-height: 30vh;
     overflow-y: scroll;
 
-    button {
+    Button {
       height: 50px;
       max-width: 300px;
       background-color: rgb(0, 128, 117);

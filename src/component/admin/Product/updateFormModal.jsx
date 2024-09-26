@@ -77,7 +77,10 @@ const UpdateProductModal = ({
         </FormControl>
 
         <div className="subcategory">
-          <label className={isFocus || editProduct.sub_category ?  "isFocus" : ""} htmlFor="sousCategorie">
+          <label
+            className={isFocus || editProduct.sub_category ? "isFocus" : ""}
+            htmlFor="sousCategorie"
+          >
             Sous-catégorie
           </label>
           <input

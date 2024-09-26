@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { TextField } from "@mui/material";
+import { Button, TextField } from "@mui/material";
 
 const FormTable = ({ handleSubmit, tableNumber, setTableNumber }) => {
   return (
@@ -16,7 +16,7 @@ const FormTable = ({ handleSubmit, tableNumber, setTableNumber }) => {
         onChange={(e) => setTableNumber(e.target.value)}
         value={tableNumber}
       />
-      <button type="submit">Créer la table</button>
+      <Button type="submit">Créer la table</Button>
     </form>
   );
 };

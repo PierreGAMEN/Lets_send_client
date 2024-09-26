@@ -1,9 +1,18 @@
 /* eslint-disable react/prop-types */
-import { FormControl, InputLabel, MenuItem, Select, TextField } from "@mui/material";
+import {
+  Button,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  TextField,
+} from "@mui/material";
 import axios from "axios";
 import { useState } from "react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+const apiUrl = import.meta.env.VITE_API_URL;
+
 
 const CreateUser = ({ company_id }) => {
   // État pour gérer les entrées du formulaire
@@ -28,7 +37,7 @@ const CreateUser = ({ company_id }) => {
     e.preventDefault();
     try {
       const response = await axios.post(
-        "http://localhost:4000/api/auth/create",
+        `${apiUrl}/api/auth/create`,
         formData
       );
       if (response.data) {
@@ -92,9 +101,8 @@ const CreateUser = ({ company_id }) => {
         </Select>
       </FormControl>
 
-
       {/* Bouton pour soumettre le formulaire */}
-      <button type="submit">Créer l&apos;utilisateur</button>
+      <Button type="submit">Créer l&apos;utilisateur</Button>
     </form>
   );
 };

@@ -7,12 +7,15 @@ import {
   DialogTitle,
 } from "@mui/material";
 
-const ModalDeleteProduct = ({ open, onClose, onSubmit, product }) => {
+const ModalDeleteOrder = ({ open, onClose, onSubmit, order }) => {
   return (
     <Dialog open={open} onClose={onClose}>
-      <DialogTitle>Supprimer le produit</DialogTitle>
+      <DialogTitle>Supprimer la commande</DialogTitle>
       <DialogContent>
-        <p>Voulez vous vraiment supprimer &quot;{product.name}&quot; ?</p>
+        <p>
+          Voulez vous vraiment supprimer le produit &quot;{order.product.name}
+          &quot; ?
+        </p>
       </DialogContent>
       <DialogActions>
         <Button onClick={onSubmit}>OUI</Button>
@@ -22,4 +25,4 @@ const ModalDeleteProduct = ({ open, onClose, onSubmit, product }) => {
   );
 };
 
-export default ModalDeleteProduct;
+export default ModalDeleteOrder;

@@ -1,6 +1,7 @@
 /* eslint-disable react/prop-types */
 
 import {
+  Button,
   FormControl,
   InputLabel,
   MenuItem,
@@ -109,7 +110,7 @@ const FormProduct = ({
         required
         fullWidth
       />
-      <button type="submit">Soumettre</button>
+      <Button type="submit">Soumettre</Button>
     </form>
   );
 };

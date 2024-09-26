@@ -7,6 +7,7 @@ import MenuPage from "./MenuPage";
 import HeaderAdmin from "./Header/headerAdmin";
 import Cookies from "js-cookie";
 import { jwtDecode } from "jwt-decode";
+const apiUrl = import.meta.env.VITE_API_URL;
 
 const Admin = () => {
   // État pour gérer la visibilité des différents formulaires et sections
@@ -68,7 +69,7 @@ const Admin = () => {
     try {
       // Envoyer une requête POST à l'API d'authentification
       const response = await axios.post(
-        "http://localhost:4000/api/auth",
+        `${apiUrl}/api/auth`,
         formInput,
         { withCredentials: true } // Pour s'assurer que les cookies sont envoyés avec la requête
       );

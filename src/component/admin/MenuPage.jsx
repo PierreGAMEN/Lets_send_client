@@ -6,6 +6,7 @@ import NavAdmin from "./BottomNav/navAdmin";
 import TablesWithProducts from "./Order/tableWithProduct";
 import AdminTable from "./Tables";
 import ProductMenu from "./Product";
+import { Button } from "@mui/material";
 
 const MenuPage = ({ user, openForm, handleForm }) => {
   return (
@@ -17,13 +18,13 @@ const MenuPage = ({ user, openForm, handleForm }) => {
             <>
               {/* Bouton pour administrer la carte */}
 
-              <button onClick={() => handleForm("createProduct")}>
+              <Button onClick={() => handleForm("createProduct")}>
                 Administrer la carte
-              </button>
+              </Button>
 
-              <button onClick={() => handleForm("createTable")}>
+              <Button onClick={() => handleForm("createTable")}>
                 Administrer les tables
-              </button>
+              </Button>
             </>
           )}
         </div>

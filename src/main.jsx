@@ -9,6 +9,8 @@ import "@fontsource/roboto/400.css";
 import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
 import App from "./App";
+import SuccessPage from "./component/annexes/success";
+import CancelPage from "./component/annexes/cancel";
 
 const router = createBrowserRouter([
   {
@@ -22,6 +24,14 @@ const router = createBrowserRouter([
       {
         path: "/client/:id_company/:id_table",
         element: <Client />,
+      },
+      {
+        path: "/success",
+        element: <SuccessPage />,
+      },
+      {
+        path: "/cancel",
+        element: <CancelPage />,
       },
     ],
   },

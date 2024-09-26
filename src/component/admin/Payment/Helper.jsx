@@ -10,9 +10,21 @@ import {
   TextField,
 } from "@mui/material";
 
-const HelperDivider = ({ open, onClose, total, setTotal }) => {
+const HelperDivider = ({
+  open,
+  onClose,
+  total,
+  setTotal,
+  order,
+  handlePaymentStatusChange,
+  handleDeleteOrder,
+  handleCreateTransaction,
+  company_id,
+}) => {
   const [peopleNumber, setPeopleNumber] = useState(0); // Initialiser à 0
   const [totalsPerPerson, setTotalsPerPerson] = useState([]);
+  // eslint-disable-next-line no-unused-vars
+  const [amountToPay, setAmountToPay] = useState(total)
 
   const DeletePerson = () => {
     setPeopleNumber(peopleNumber - 1);
@@ -28,8 +40,22 @@ const HelperDivider = ({ open, onClose, total, setTotal }) => {
   };
 
   const addPayment = () => {
-    setTotal(total - totalsPerPerson)
-  }
+    setTotal(total - totalsPerPerson);
+  };
+
+  const clotureTable = () => {
+    for (const item of order) {
+      handlePaymentStatusChange(item.id);
+      handleDeleteOrder(item);
+    }
+    handleCreateTransaction(amountToPay, company_id, false)
+  };
+
+  useEffect(() => {
+    if (total == 0) {
+      clotureTable();
+    }
+  }, [total]);
 
   useEffect(() => {
     dispatchAmount();
@@ -52,9 +78,6 @@ const HelperDivider = ({ open, onClose, total, setTotal }) => {
 
         {peopleNumber > 0 && (
           <>
-            <DialogContentText>
-              Montants ajustables pour chaque personne :
-            </DialogContentText>
             {Array.from({ length: peopleNumber }).map((_, index) => (
               <div key={index}>
                 <TextField
@@ -69,9 +92,7 @@ const HelperDivider = ({ open, onClose, total, setTotal }) => {
             ))}
           </>
         )}
-        <DialogContentText>
-              Montants restant {total}
-            </DialogContentText>
+        <DialogContentText>Montants restant {total}</DialogContentText>
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose}>Fermer</Button>

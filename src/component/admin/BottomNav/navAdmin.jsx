@@ -1,25 +1,40 @@
 /* eslint-disable react/prop-types */
-import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
-import FormatListNumberedRoundedIcon from '@mui/icons-material/FormatListNumberedRounded';
-import AddShoppingCartRoundedIcon from '@mui/icons-material/AddShoppingCartRounded';
+import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
+import FormatListNumberedRoundedIcon from "@mui/icons-material/FormatListNumberedRounded";
+import AddShoppingCartRoundedIcon from "@mui/icons-material/AddShoppingCartRounded";
+import { BottomNavigation, BottomNavigationAction } from "@mui/material";
+import { useState } from "react";
 import "./navAdmin.scss";
 
 const NavAdmin = ({ onHomeClick, onFollowOrder, onTableOrder }) => {
+  const [value, setValue] = useState(null);
   return (
-    <nav className='navAdmin'>
-      <div>
-        <AddShoppingCartRoundedIcon onClick={onTableOrder}/>
-        <p>Commander</p>
-      </div>
-      <div onClick={onHomeClick}>
-        <HomeRoundedIcon />
-        <p>Accueil</p>
-      </div>
-      <div>
-        <FormatListNumberedRoundedIcon onClick={onFollowOrder}/>
-        <p>Suivre</p>
-      </div>
-    </nav>
+    <BottomNavigation
+      className="navAdmin"
+      showLabels
+      value={value}
+      onChange={(event, newValue) => {
+        setValue(newValue);
+      }}
+    >
+      <BottomNavigationAction
+        onClick={onTableOrder}
+        label="Commander"
+        icon={<AddShoppingCartRoundedIcon />}
+      ></BottomNavigationAction>
+
+      <BottomNavigationAction
+        onClick={onHomeClick}
+        label="Accueil"
+        icon={<HomeRoundedIcon />}
+      ></BottomNavigationAction>
+
+      <BottomNavigationAction
+        onClick={onFollowOrder}
+        label="Suivi"
+        icon={<FormatListNumberedRoundedIcon />}
+      ></BottomNavigationAction>
+    </BottomNavigation>
   );
 };
 

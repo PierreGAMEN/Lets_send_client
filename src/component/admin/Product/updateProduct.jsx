@@ -5,6 +5,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import UpdateProductModal from "./updateFormModal";
 import ModalDeleteProduct from "./modalDeleteProduct";
+import { Button } from "@mui/material";
 
 const UpdateProduct = ({ company_id }) => {
   const [menu, setMenu] = useState({});
@@ -19,12 +20,13 @@ const UpdateProduct = ({ company_id }) => {
     name: "",
   });
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const apiUrl = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
     async function loadMenu() {
       try {
         const response = await axios.get(
-          `http://localhost:4000/api/menu/${company_id}`
+          `${apiUrl}/api/menu/${company_id}`
         );
         const data = response.data;
 
@@ -66,7 +68,7 @@ const UpdateProduct = ({ company_id }) => {
 
   const handleDelete = async (productId) => {
     try {
-      await axios.delete(`http://localhost:4000/api/menu/product/${productId}`);
+      await axios.delete(`${apiUrl}/api/menu/product/${productId}`);
       toast.success("Le produit a été supprimé avec succès");
       setMenu((prevMenu) => {
         const newMenu = { ...prevMenu };
@@ -93,7 +95,7 @@ const UpdateProduct = ({ company_id }) => {
   const handleUpdateProduct = async () => {
     try {
       await axios.put(
-        `http://localhost:4000/api/menu/product/update/${editProduct.id}`,
+        `${apiUrl}/api/menu/product/update/${editProduct.id}`,
         editProduct
       );
       toast.success("Le produit a été mis à jour avec succès");
@@ -131,17 +133,15 @@ const UpdateProduct = ({ company_id }) => {
                   {menu[category][subCategory].map((item) => (
                     <li key={item.id}>
                       <p>{item.name}</p>
-                      <div className="container_button">
-                        <button
-                          onClick={() =>
-                            openModalDeleteProductFunction(item)
-                          }
+                      <div className="container_Button">
+                        <Button
+                          onClick={() => openModalDeleteProductFunction(item)}
                         >
                           Supprimer
-                        </button>
-                        <button onClick={() => handleEdit(item)}>
+                        </Button>
+                        <Button onClick={() => handleEdit(item)}>
                           Modifier
-                        </button>
+                        </Button>
                       </div>
                     </li>
                   ))}

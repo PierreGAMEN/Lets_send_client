@@ -5,6 +5,7 @@ import FormProduct from "./formProduct";
 import axios from "axios";
 import { useState } from "react";
 import UpdateProduct from "./updateProduct";
+const apiUrl = import.meta.env.VITE_API_URL;
 
 const ProductMenu = ({ company_id }) => {
   // *************************************************
@@ -46,10 +47,7 @@ const ProductMenu = ({ company_id }) => {
     };
 
     try {
-      const response = await axios.post(
-        "http://localhost:4000/api/menu",
-        productData
-      );
+      const response = await axios.post(`${apiUrl}/api/menu`, productData);
       if (response.data) {
         toast.success("Le produit a été créé avec succès");
       }
@@ -87,7 +85,7 @@ const ProductMenu = ({ company_id }) => {
         price={price}
         setPrice={setPrice}
       />
-      <UpdateProduct company_id={company_id}/>
+      <UpdateProduct company_id={company_id} />
     </section>
   );
 };

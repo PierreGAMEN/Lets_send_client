@@ -8,6 +8,8 @@ import PersonalInfo from "./PersonalInfo";
 import ChangePasswordDialog from "./ModalPersonalPwd";
 import ModalDeleteUser from "./modalDelete";
 import ModalUpdateOther from "./modalUpdateOther";
+import { Button } from "@mui/material";
+const apiUrl = import.meta.env.VITE_API_URL;
 
 const UpdateUser = ({ company_id, user_id, username, role }) => {
   // *************************************************
@@ -79,7 +81,7 @@ const UpdateUser = ({ company_id, user_id, username, role }) => {
         return;
       }
       const response = await axios.put(
-        `http://localhost:4000/api/auth/update/${user_id}`,
+        `${apiUrl}/api/auth/update/${user_id}`,
         formData
       );
       toast.success(response.data.message);
@@ -97,7 +99,7 @@ const UpdateUser = ({ company_id, user_id, username, role }) => {
         return;
       }
       const response = await axios.put(
-        `http://localhost:4000/api/auth/update/${selectedUser.id}`,
+        `${apiUrl}/api/auth/update/${selectedUser.id}`,
         selectedUser
       );
       toast.success(response.data.message);
@@ -115,7 +117,7 @@ const UpdateUser = ({ company_id, user_id, username, role }) => {
   const deleteUser = async (data) => {
     try {
       const response = await axios.delete(
-        `http://localhost:4000/api/auth/delete/${data.id}`
+        `${apiUrl}/api/auth/delete/${data.id}`
       );
       toast.success(response.data.message);
       setReload(!reload);
@@ -138,7 +140,7 @@ const UpdateUser = ({ company_id, user_id, username, role }) => {
     setLoading(true);
     try {
       const response = await axios.post(
-        "http://localhost:4000/api/auth/getAllUsers",
+        `${apiUrl}/api/auth/getAllUsers`,
         {
           company_id,
           user_id,
@@ -239,16 +241,16 @@ const UpdateUser = ({ company_id, user_id, username, role }) => {
           {UsersExcludingYou.map((user) => (
             <div className="container_one_profil" key={user.id}>
               <span>{user.username}</span>
-              <button onClick={() => openEditOtherProfilModalFunction(user)}>
+              <Button onClick={() => openEditOtherProfilModalFunction(user)}>
                 Modifier
-              </button>
-              <button
+              </Button>
+              <Button
                 onClick={() => {
                   openDeleteModalFunction(user);
                 }}
               >
                 Supprimer
-              </button>
+              </Button>
             </div>
           ))}
         </div>

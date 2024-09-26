@@ -11,7 +11,7 @@ const ModalDeleteTable = ({ open, onClose, onSubmit, update }) => {
         <Button variant="outlined" color="error" onClick={onSubmit}>
           OUI
         </Button>
-        <Button  onClick={onClose}>NON</Button>
+        <Button onClick={onClose}>NON</Button>
       </DialogActions>
     </Dialog>
   );

@@ -33,7 +33,10 @@ const UpdateTable = ({
               >
                 Editer
               </Button>
-              <Button color="error" onClick={() => onDelete(table.id, table.table_number)}>
+              <Button
+                color="error"
+                onClick={() => onDelete(table.id, table.table_number)}
+              >
                 Supprimer
               </Button>
             </div>

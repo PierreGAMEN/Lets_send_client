@@ -45,12 +45,7 @@ const HeaderAdmin = ({
         </div>
       )}
 
-      <Menu
-        anchorEl={anchorEl}
-        open={openMenu}
-        onClose={handleCloseMenu}
-        
-      >
+      <Menu anchorEl={anchorEl} open={openMenu} onClose={handleCloseMenu}>
         <MenuItem
           onClick={() => {
             OnClickDeconnection();

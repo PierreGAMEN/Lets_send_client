@@ -5,6 +5,7 @@ import UpdateTable from "./updateTable";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import "./table.scss";
+const apiUrl = import.meta.env.VITE_API_URL;
 
 const AdminTable = ({ company_id }) => {
   // ***************************************************
@@ -44,7 +45,7 @@ const AdminTable = ({ company_id }) => {
     const fetchTables = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:4000/api/table/${company_id}`
+          `${apiUrl}/api/table/${company_id}`
         );
         setTables(response.data);
         setLoading(false);
@@ -64,7 +65,7 @@ const AdminTable = ({ company_id }) => {
     try {
       setLoading(true);
       const response = await axios.delete(
-        `http://localhost:4000/api/table/delete/${id}`
+        `${apiUrl}/api/table/delete/${id}`
       );
       if (response.data) {
         toast.success("La table a bien été supprimé");
@@ -91,7 +92,7 @@ const AdminTable = ({ company_id }) => {
     try {
       // Effectuer la requête de mise à jour
       const response = await axios.put(
-        `http://localhost:4000/api/table/update/${id}`,
+        `${apiUrl}/api/table/update/${id}`,
         {
           table_number: update,
           company_id,
@@ -136,7 +137,7 @@ const AdminTable = ({ company_id }) => {
     try {
       console.log(tableData);
       const response = await axios.post(
-        "http://localhost:4000/api/table/create",
+        `${apiUrl}/api/table/create`,
         tableData
       );
       if (response.data) {
