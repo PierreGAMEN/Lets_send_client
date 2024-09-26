@@ -1,0 +1,9 @@
+{
+  "name": "Lets send",
+  "short_name": "LS",
+  "description": "Application pour aider les bars et les restaurateurs à gagner en productivité.",
+  "theme_color": "#ffffff",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait"
+}
