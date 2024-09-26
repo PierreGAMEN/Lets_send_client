@@ -13,6 +13,8 @@ import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import DeleteIcon from "@mui/icons-material/Delete";
 import CommentIcon from "@mui/icons-material/Comment";
 import ModalComment from "./modalComment";
+import { Button } from "@mui/material";
+const apiUrl = import.meta.env.VITE_API_URL;
 
 const Client = ({ tableNumber, companyId, table_id }) => {
   // *************************************************
@@ -75,7 +77,7 @@ const Client = ({ tableNumber, companyId, table_id }) => {
       if (id_tableParams) {
         try {
           const response = await axios.get(
-            `http://localhost:4000/api/table/${id_company}/${id_tableParams}`
+            `${apiUrl}/api/table/${id_company}/${id_tableParams}`
           );
           if (!response.data) {
             setWrongTable(true);
@@ -95,7 +97,7 @@ const Client = ({ tableNumber, companyId, table_id }) => {
     async function loadMenu() {
       try {
         const response = await axios.get(
-          `http://localhost:4000/api/menu/${id_company}`
+          `${apiUrl}/api/menu/${id_company}`
         );
         const data = response.data;
 
@@ -215,7 +217,7 @@ const Client = ({ tableNumber, companyId, table_id }) => {
 
   useEffect(() => {
     // Connect to WebSocket server
-    connect("ws://localhost:4000/socket");
+    connect("ws://192.168.1.19:4000/socket");
 
     return () => {
       // Clean up WebSocket connection
@@ -265,12 +267,12 @@ const Client = ({ tableNumber, companyId, table_id }) => {
                       <CommentIcon
                         onClick={() => handleSelectedProduct(item)}
                       />
-                      <button
-                        className="button_Add_cart"
+                      <Button
+                        className="Button_Add_cart"
                         onClick={() => addToCart(item)}
                       >
                         Ajouter
-                      </button>
+                      </Button>
                     </li>
                   ))}
                 </ul>
@@ -314,7 +316,7 @@ const Client = ({ tableNumber, companyId, table_id }) => {
             }`}
           >
             {cart.length > 0 ? (
-              <button onClick={placeOrder}>Lancer la commande</button>
+              <Button onClick={placeOrder}>Lancer la commande</Button>
             ) : (
               <div>Votre panier est vide</div>
             )}
