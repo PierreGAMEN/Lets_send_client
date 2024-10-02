@@ -32,7 +32,7 @@ const Admin = () => {
     password: "",
   });
 
-  // Fonction pour changer l'état des formulaires affichés
+
   const handleForm = (form) => {
     setOpenForm({
       initMenu: form === "initMenu",
