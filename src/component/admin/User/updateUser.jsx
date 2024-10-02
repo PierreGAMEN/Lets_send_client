@@ -139,13 +139,10 @@ const UpdateUser = ({ company_id, user_id, username, role }) => {
   const loadAllUsersExcludingYou = async () => {
     setLoading(true);
     try {
-      const response = await axios.post(
-        `${apiUrl}/api/auth/getAllUsers`,
-        {
-          company_id,
-          user_id,
-        }
-      );
+      const response = await axios.post(`${apiUrl}/api/auth/getAllUsers`, {
+        company_id,
+        user_id,
+      });
       if (response.data) {
         setUsersExcludingYou(response.data);
       }
