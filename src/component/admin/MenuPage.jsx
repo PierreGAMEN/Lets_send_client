@@ -1,11 +1,11 @@
 /* eslint-disable react/prop-types */
 import OrderDisplay from "./Track/TrackingOrder";
 import CreateUser from "./User/createUser";
-import UpdateUser from "./User/UpdateUser";
 import NavAdmin from "./BottomNav/navAdmin";
 import TablesWithProducts from "./Order/tableWithProduct";
 import AdminTable from "./Tables";
 import ProductMenu from "./Product";
+import UpdateUser from "./User/UpdateUser"
 import { Button } from "@mui/material";
 
 const MenuPage = ({ user, openForm, handleForm }) => {
