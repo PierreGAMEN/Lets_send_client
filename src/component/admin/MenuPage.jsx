@@ -8,6 +8,7 @@ import ProductMenu from "./Product";
 import { Button } from "@mui/material";
 import UpdateUser from "./User/UpdateUser";
 
+
 const MenuPage = ({ user, openForm, handleForm }) => {
   return (
     <section className="admin">
