@@ -6,6 +6,7 @@ export default defineConfig({
   plugins: [
     react(),
     VitePWA({
+      injectRegister: 'auto',
       manifest: {
         name: 'Lets_send',
         short_name: 'LS',
