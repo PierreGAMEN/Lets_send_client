@@ -10,7 +10,7 @@ import { jwtDecode } from "jwt-decode";
 const apiUrl = import.meta.env.VITE_API_URL;
 
 const Admin = () => {
-  // État pour gérer la visibilité des différents formulaires et sections
+ 
   const [openForm, setOpenForm] = useState({
     initMenu: true,
     createProduct: false,
@@ -19,7 +19,7 @@ const Admin = () => {
     updateUser: false,
   });
 
-  // État pour stocker les informations de l'utilisateur connecté
+
   const [user, setUser] = useState({
     username: null,
     right: null,
@@ -27,7 +27,6 @@ const Admin = () => {
     user_id: null,
   });
 
-  // État pour gérer les entrées du formulaire d'authentification
   const [formInput, setFormInput] = useState({
     username: "",
     password: "",
