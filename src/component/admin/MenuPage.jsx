@@ -5,9 +5,8 @@ import NavAdmin from "./BottomNav/navAdmin";
 import TablesWithProducts from "./Order/tableWithProduct";
 import AdminTable from "./Tables";
 import ProductMenu from "./Product";
-
-import { Button } from "@mui/material";
 import UpdateUser from "./User/UpdateUser";
+import { Button } from "@mui/material";
 
 const MenuPage = ({ user, openForm, handleForm }) => {
   return (
