@@ -6,7 +6,7 @@ import TablesWithProducts from "./Order/tableWithProduct";
 import AdminTable from "./Tables";
 import ProductMenu from "./Product";
 import { Button } from "@mui/material";
-import UpdateUser from "./User/UpdateUser.jsx";
+import UpdateUser from "./User/UpdateUsers";
 
 const MenuPage = ({ user, openForm, handleForm }) => {
   return (
